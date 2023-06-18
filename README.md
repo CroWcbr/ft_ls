@@ -9,9 +9,28 @@ Recode the system’s command ls
 - t - sort by modification time, newest first
 
 ## Use this project
-- git clone --recursive <this project>
+- git clone --recursive ....
 
 ## Use external lib
 - libft
 	- git submodule add https://github.com/CroWcbr/libft.git external/libft
-	
+
+## Within your mandatory part you are allowed to use the following functions:
+- opendir
+- readdir
+- closedir
+- stat
+- lstat
+- getpwuid
+- getgrgid
+- listxattr
+- getxattr
+- time
+- ctime
+- readlink
+- perror
+- strerror
+- ===IN USE=====
+- malloc
+- free
+- write
