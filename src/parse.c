@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:00:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/19 00:34:25 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/25 16:11:23 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,21 @@ static void	add_to_list(char *str_to_list, t_list **list)
 	ft_lstadd_back(list, new_list);
 }
 
+static void	print_usage()
+{
+	ft_putstr_n
+	(	
+		"Usage: ls [OPTION]... [FILE]...\n", \
+		"Mandatory arguments:\n", \
+		"\t-a\tdo not ignore entries starting with .\n", \
+		"\t-l\tuse a long listing format\n", \
+		"\t-r\treverse order while sorting\n", \
+		"\t-R\tlist subdirectories recursively\n", \
+		"\t-t\tsort by modification time, newest first\n", \
+		"\0"
+	);
+}
+
 static bool	parse_flag(char *flags, t_ls *ls)
 {
 	while (*flags)
@@ -84,9 +99,14 @@ static bool	parse_flag(char *flags, t_ls *ls)
 			ls->flags.f_r = true;
 		else if (*flags == 't')
 			ls->flags.f_t = true;
+		else if (*flags == 'h')
+		{
+			print_usage();
+			return (false);
+		}
 		else
 		{
-			ft_putstr_n("ft_ls: invalid option: ", flags, "\n");
+			ft_putstr_n("ft_ls: invalid option: ", flags, "\n","\0");
 			return (false);
 		}
 		flags++;
