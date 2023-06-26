@@ -15,7 +15,11 @@ INC_ALL			=	-I$(INC_DIR) \
 
 SRC				=	ft_ls.c \
 					parse.c \
-					utily.c
+					ls_loop.c \
+					ls_sort.c \
+					ls_print.c \
+					utily.c \
+					utily_lst.c
 
 OBJ				=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 $(OBJ)			: 	| $(OBJ_DIR)

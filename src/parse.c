@@ -6,17 +6,18 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:00:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/25 16:11:23 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/26 02:10:39 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_ls.h>
 
-static void	ls_print(t_ls *ls)
+static void	parse_print(t_ls *ls)
 {
 	t_list	*tmp;
 
 	ft_putstr("====================================\n");
+	ft_putstr("parse_print : \n");
 	ft_putstr("flag : \n");
 	ft_putstr("\t\tl\t:\t");
 	ft_putnbr_fd(ls->flags.f_l, 1);
@@ -56,20 +57,6 @@ static t_ls	*init(void)
 	return (ls);
 }
 
-static void	add_to_list(char *str_to_list, t_list **list)
-{
-	char	*tmp;
-	t_list	*new_list;
-
-	tmp = ft_strdup(str_to_list);
-	if (!tmp)
-		ft_err_malloc("Error malloc: parse.c - add_to_list - tmp");
-	new_list = ft_lstnew(tmp);
-	if (!new_list)
-		ft_err_malloc("Error malloc: parse.c - add_to_list - new_list");
-	ft_lstadd_back(list, new_list);
-}
-
 static void	print_usage()
 {
 	ft_putstr_n
@@ -99,6 +86,8 @@ static bool	parse_flag(char *flags, t_ls *ls)
 			ls->flags.f_r = true;
 		else if (*flags == 't')
 			ls->flags.f_t = true;
+		else if (*flags == 'f')
+			ls->flags.f_f = true;
 		else if (*flags == 'h')
 		{
 			print_usage();
@@ -106,7 +95,8 @@ static bool	parse_flag(char *flags, t_ls *ls)
 		}
 		else
 		{
-			ft_putstr_n("ft_ls: invalid option: ", flags, "\n","\0");
+			ft_putstr_n("ft_ls: invalid option: ", flags, "\n", \
+						"Try 'ls -h' for more information.\n","\0");
 			return (false);
 		}
 		flags++;
@@ -130,12 +120,12 @@ t_ls	*parse(char **argv)
 			}
 		}
 		else
-			add_to_list(*argv, &ls->ls_path);
+			add_char_to_list(*argv, &ls->ls_path);
 		argv++;
 	}
 	if (!ls->ls_path)
-		add_to_list(".", &ls->ls_path);
+		add_char_to_list(".", &ls->ls_path);
 	if (IS_DEBUG)
-		ls_print(ls);
+		parse_print(ls);
 	return (ls);
 }
