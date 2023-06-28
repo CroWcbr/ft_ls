@@ -6,12 +6,12 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:39:25 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/18 21:54:27 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/28 23:32:06 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdarg.h>
-#include <libft.h>
+#include <../external/libft/include/libft.h>
 
 void	ft_err_malloc(char *str)
 {

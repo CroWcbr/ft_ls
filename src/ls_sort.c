@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 00:31:08 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/26 02:13:09 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/28 20:18:31 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ static void	reverse_list(t_list** head)
 		prev = current;
 		current = next;
 	}
-
 	*head = prev;
 }
 

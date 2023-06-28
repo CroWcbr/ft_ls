@@ -10,8 +10,7 @@ INC_DIR			= 	./inc
 OBJ_DIR			=	./obj
 LIBFT_DIR		=	./external/libft
 LIBFT_LIB		=	libft.a
-INC_ALL			=	-I$(INC_DIR) \
-					-I$(LIBFT_DIR)/include
+INC_ALL			=	-I$(INC_DIR)
 
 SRC				=	ft_ls.c \
 					parse.c \

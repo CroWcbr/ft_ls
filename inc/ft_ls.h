@@ -6,14 +6,14 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 14:11:57 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/26 02:16:55 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/28 23:30:54 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_LS_H
 # define FT_LS_H
 
-# include "libft.h"
+# include "../external/libft/include/libft.h"
 # include <stdbool.h>
 # include <stdio.h>
 

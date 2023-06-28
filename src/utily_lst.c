@@ -6,11 +6,12 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 23:19:20 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/26 02:21:45 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/28 23:40:08 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+#include <time.h>
 
 void	add_char_to_list(char *str_to_list, t_list **list)
 {
