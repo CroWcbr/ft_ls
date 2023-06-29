@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:00:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 00:05:33 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/29 03:20:22 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static t_ls	*init(void)
 	ls->flags.f_a = false;
 	ls->flags.f_r = false;
 	ls->flags.f_t = false;
+	ls->flags.f_f = false;
 	ls->ls_path = NULL;
 	return (ls);
 }

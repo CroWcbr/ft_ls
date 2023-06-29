@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 00:31:08 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 02:51:29 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/29 03:29:21 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 static bool	noflag_compare(char* str1, char* str2, char *path)
 {
-	for(size_t i = 0; ft_strlen(str1); ++i)
+	(void)path;
+	for(size_t i = 0; i < ft_strlen(str1); ++i)
 	{
 		if (str1[i] == str2[i])
 			continue;
@@ -103,7 +104,6 @@ static void	sort_list(t_list** head, char *path, \
 
 	*head = merge(left, right, path, compare_func);
 }
-
 
 static void	reverse_list(t_list** head)
 {

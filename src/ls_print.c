@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 00:31:10 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 02:23:01 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/29 03:24:06 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 
 void	ls_print(t_list *lst, t_flags *flags, char *path)
 {
+	(void)flags;
+	(void)path;
 	while(lst)
 	{
 		ft_putstr((char *)lst->content);
