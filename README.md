@@ -1,6 +1,10 @@
 # ft_ls
 Recode the system’s command ls
 
+# Status
+- print in progress
+- stranfe error in valgrind (need chec sort);
+
 ## Flags
 - l - use a long listing format
 - R - list subdirectories recursively

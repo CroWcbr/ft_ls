@@ -17,8 +17,7 @@ SRC				=	ft_ls.c \
 					ls_loop.c \
 					ls_sort.c \
 					ls_print.c \
-					utily.c \
-					utily_lst.c
+					utily.c
 
 OBJ				=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 $(OBJ)			: 	| $(OBJ_DIR)

@@ -6,18 +6,17 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 00:31:08 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/28 20:18:31 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/06/29 02:51:29 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 #include <time.h>
+#include <sys/stat.h>
+#include <errno.h>
 
-static bool	noflag_compare(t_elem* elem1, t_elem* elem2)
+static bool	noflag_compare(char* str1, char* str2, char *path)
 {
-	char* str1 = elem1->name;
-	char* str2 = elem2->name;
-
 	for(size_t i = 0; ft_strlen(str1); ++i)
 	{
 		if (str1[i] == str2[i])
@@ -30,64 +29,81 @@ static bool	noflag_compare(t_elem* elem1, t_elem* elem2)
 	return true;
 }
 
-static bool	t_flag_compare(t_elem* elem1, t_elem* elem2)
+static bool	t_flag_compare(char* str1, char* str2, char *path)
 {
-	return (elem1->modified_time >= elem2->modified_time);
+	struct stat	file_stat1;
+	struct stat	file_stat2;
+	char		*file1 = path_to_file(path, str1);
+	char		*file2 = path_to_file(path, str2);
+
+	if (lstat(file1, &file_stat1))
+	{
+		ft_putstr_n("ft_ls: cannot access '", str1, "': ", strerror(errno), "\n", "\0");
+		exit(-1);
+	}
+	if (lstat(file2, &file_stat2))
+	{
+		ft_putstr_n("ft_ls: cannot access '", str2, "': ", strerror(errno), "\n", "\0");
+		exit(-1);
+	}
+	free(file1);
+	free(file2);
+	if (file_stat1.st_mtime == file_stat2.st_mtime)
+		return noflag_compare(str1, str2, "");
+	return (file_stat1.st_mtime > file_stat2.st_mtime);
 }
 
-static void	split_list(t_list* head, t_list** leftHalf, t_list** rightHalf)
+t_list*	merge(t_list* left, t_list* right, char *path, \
+					bool (*compare_func)(char*, char*, char*))
 {
-	t_list* slow;
-	t_list* fast;
+	t_list result;
+	t_list* tail = &result;
 
-	slow = head;
-	fast = head;
-	while (fast->next && fast->next->next)
+	while (left && right)
+	{
+		if (compare_func((char*)left->content, (char*)right->content, path))
+		{
+			tail->next = left;
+			left = left->next;
+		} 
+		else
+		{
+			tail->next = right;
+			right = right->next;
+		}
+		tail = tail->next;
+	}
+
+	tail->next = (left != NULL) ? left : right;
+	return result.next;
+}
+
+static void	sort_list(t_list** head, char *path, \
+						bool (*compare_func)(char*, char*, char*))
+{
+	if (*head == NULL || (*head)->next == NULL)
+	{
+		return;
+	}
+
+	t_list* slow = *head;
+	t_list* fast = (*head)->next;
+	while (fast && fast->next)
 	{
 		slow = slow->next;
 		fast = fast->next->next;
 	}
-	*leftHalf = head;
-	*rightHalf = slow->next;
+
+	t_list	*left = *head;
+	t_list	*right = slow->next;
 	slow->next = NULL;
+
+	sort_list(&left, path, compare_func);
+	sort_list(&right, path, compare_func);
+
+	*head = merge(left, right, path, compare_func);
 }
 
-static t_list*	merge_lists(t_list* left, t_list* right, bool (*flag_compare)(t_elem*, t_elem*))
-{
-	t_list* result;
-	
-	result = NULL;
-	if (left == NULL)
-		return right;
-	if (right == NULL)
-		return left;
-	if (flag_compare((t_elem*)left->content, (t_elem*)right->content))
-	{
-		result = left;
-		result->next = merge_lists(left->next, right, flag_compare);
-	}
-	else
-	{
-		result = right;
-		result->next = merge_lists(left, right->next, flag_compare);
-	}
-	return result;
-}
-
-static void	sort_list(t_list** head, bool (*flag_compare)(t_elem*, t_elem*))
-{
-	t_list*	current;
-	t_list*	leftHalf;
-	t_list*	rightHalf;
-
-	current =  *head;
-	if (current == NULL || current->next == NULL)
-		return;
-	split_list(current, &leftHalf, &rightHalf);
-	sort_list(&leftHalf, flag_compare);
-	sort_list(&rightHalf, flag_compare);
-	*head = merge_lists(leftHalf, rightHalf, flag_compare);
-}
 
 static void	reverse_list(t_list** head)
 {
@@ -108,14 +124,16 @@ static void	reverse_list(t_list** head)
 	*head = prev;
 }
 
-void	ls_sort(t_list** lst, t_flags* flags)
+void	ls_sort(t_list** lst, t_flags* flags, char *path)
 {
+	if (ft_lstsize(*lst) < 2)
+		return ;
 	if (flags->f_t)
-		sort_list(lst, t_flag_compare);
+		sort_list(lst, path, t_flag_compare);
 	else if (flags->f_f)
 		;
 	else
-		sort_list(lst, noflag_compare);
+		sort_list(lst, path, noflag_compare);
 	if (flags->f_r)
 		reverse_list(lst);
 }
