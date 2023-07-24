@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:00:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 03:20:22 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/07/23 22:38:18 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	parse_print(t_ls *ls)
 	ft_putstr("\t\tl\t:\t");
 	ft_putnbr_fd(ls->flags.f_l, 1);
 	ft_putstr("\n\t\tR\t:\t");
-	ft_putnbr_fd(ls->flags.f_big_r, 1);
+	ft_putnbr_fd(ls->flags.f_R, 1);
 	ft_putstr("\n\t\ta\t:\t");
 	ft_putnbr_fd(ls->flags.f_a, 1);
 	ft_putstr("\n\t\tr\t:\t");
@@ -49,11 +49,13 @@ static t_ls	*init(void)
 	if (!ls)
 		ft_err_malloc("Error malloc: parse.c - init - ls");
 	ls->flags.f_l = false;
-	ls->flags.f_big_r = false;
+	ls->flags.f_R = false;
 	ls->flags.f_a = false;
 	ls->flags.f_r = false;
 	ls->flags.f_t = false;
 	ls->flags.f_f = false;
+	ls->flags.print_endl = false;
+	ls->flags.print_dir = false;
 	ls->ls_path = NULL;
 	return (ls);
 }
@@ -69,6 +71,7 @@ static void	print_usage()
 		"\t-r\treverse order while sorting\n", \
 		"\t-R\tlist subdirectories recursively\n", \
 		"\t-t\tsort by modification time, newest first\n", \
+		"\t-f\tdo not sort\n", \
 		"\0"
 	);
 }
@@ -80,7 +83,7 @@ static bool	parse_flag(char *flags, t_ls *ls)
 		if (*flags == 'l')
 			ls->flags.f_l = true;
 		else if (*flags == 'R')
-			ls->flags.f_big_r = true;
+			ls->flags.f_R = true;
 		else if (*flags == 'a')
 			ls->flags.f_a = true;
 		else if (*flags == 'r')

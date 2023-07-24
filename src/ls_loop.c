@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 18:01:40 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 03:29:34 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/07/23 22:20:27 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,22 @@ static void	dir_loop_flag_r(t_list *dir, t_flags* flags, char *path)
 
 	while(dir)
 	{
-		final_path = path_to_file(path, (char*)dir->content);
-		if (stat(final_path, &file_stat) == 0)
+		if (ft_strcmp((char*)dir->content, ".") && ft_strcmp((char*)dir->content, ".."))
 		{
-			if (S_ISDIR(file_stat.st_mode))
-				dir_loop(final_path, flags);
+			final_path = path_to_file(path, (char*)dir->content);
+			if (lstat(final_path, &file_stat) == 0)
+			{
+				if (S_ISDIR(file_stat.st_mode))
+				{
+					dir_loop(final_path, flags);
+				}
+			}
+			else
+			{
+				ft_putstr_n("ft_ls: cannot access '", final_path, "': ", strerror(errno), "\n", "\0");
+			}
+			free(final_path);
 		}
-		else
-		{
-			ft_putstr_n("ft_ls: cannot access '", final_path, "': ", strerror(errno), "\n", "\0");
-		}
-		free(final_path);
 		dir = dir->next;
 	}
 }
@@ -59,12 +64,12 @@ static void	dir_loop(char* dir_path, t_flags* flags)
 			continue ;
 		add_char_to_list(entry->d_name, &this_dir_list);
 	}
+	closedir(dir);
 	ls_sort(&this_dir_list, flags, dir_path);
 	ls_print(this_dir_list, flags, dir_path);
-	if (flags->f_big_r)
+	if (flags->f_R)
 		dir_loop_flag_r(this_dir_list, flags, dir_path);
 	ft_lstclear(&this_dir_list, free);
-	closedir(dir);
 }
 
 static void	separate_dir_file_list(t_list *path, t_list **dir, t_list **file)
@@ -126,19 +131,16 @@ void	ls_loop(t_ls *ls)
 		ls_sort(&file, &ls->flags, "");
 		ls_print(file, &ls->flags, "");
 	}
-
+	if ((file && dir) || ft_lstsize(dir) > 1 || ls->flags.f_R)
+	{
+		ls->flags.print_dir = true;
+	}
 	if (dir)
 	{
 		ls_sort(&dir, &ls->flags, "");
 		tmp_dir = dir;
 		while (tmp_dir)
 		{
-			if (file)
-			{
-				ft_putstr("\n");
-				if (!ls->flags.f_big_r)
-					ft_putstr_n((char*)tmp_dir->content, ":\n", "\0");
-			}
 			dir_loop((char*)tmp_dir->content, &ls->flags);
 			tmp_dir = tmp_dir->next;
 		}

@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 14:11:57 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 02:24:51 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/07/23 22:07:52 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,13 @@
 typedef struct	s_flags
 {
 	bool	f_l;
-	bool	f_big_r;
+	bool	f_R;
 	bool	f_a;
 	bool	f_r;
 	bool	f_t;
 	bool	f_f;
+	bool	print_endl;
+	bool	print_dir;
 } t_flags;
 
 typedef struct	s_ls
