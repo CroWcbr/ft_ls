@@ -8,6 +8,11 @@ Recode the system’s command ls
 - r - reverse order while sorting
 - t - sort by modification time, newest first
 
+## Bonus
+- f - do not sort, enable -aU, disable -ls --color
+- Management of ACL and extended attributes.
+- Management of the columns without the option -l. (man 4 tty)
+
 ## Use this project
 - git clone --recursive ....
 

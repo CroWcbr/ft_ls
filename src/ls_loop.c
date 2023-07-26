@@ -6,40 +6,29 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 18:01:40 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/07/23 22:20:27 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/07/26 23:26:51 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_ls.h>
-
 #include <dirent.h>
-#include <sys/stat.h>
 #include <errno.h>
 
 static void	dir_loop(char* dir_path, t_flags* flags);
 
-static void	dir_loop_flag_r(t_list *dir, t_flags* flags, char *path)
+static void	dir_loop_flag_r(t_list *dir, t_flags* flags)
 {
-	struct	stat	file_stat;
-	char			*final_path;
-
+	t_file_lstat	*tmp;
 	while(dir)
 	{
-		if (ft_strcmp((char*)dir->content, ".") && ft_strcmp((char*)dir->content, ".."))
+		tmp = (t_file_lstat*)dir->content;
+		if (ft_strcmp(tmp->file_name, ".") && \
+			ft_strcmp(tmp->file_name, ".."))
 		{
-			final_path = path_to_file(path, (char*)dir->content);
-			if (lstat(final_path, &file_stat) == 0)
+			if (S_ISDIR(tmp->file_stat.st_mode))
 			{
-				if (S_ISDIR(file_stat.st_mode))
-				{
-					dir_loop(final_path, flags);
-				}
+				dir_loop(tmp->full_path, flags);
 			}
-			else
-			{
-				ft_putstr_n("ft_ls: cannot access '", final_path, "': ", strerror(errno), "\n", "\0");
-			}
-			free(final_path);
 		}
 		dir = dir->next;
 	}
@@ -60,36 +49,43 @@ static void	dir_loop(char* dir_path, t_flags* flags)
 	}
 	while ((entry = readdir(dir)) != NULL)
 	{
-		if (entry->d_name[0] == '.' && !flags->f_a)
-			continue ;
-		add_char_to_list(entry->d_name, &this_dir_list);
+		if (flags->f_a)
+		{
+			add_to_list(entry->d_name, dir_path, &this_dir_list);
+		}
+		else if (flags->f_A)
+		{
+			if (ft_strcmp(entry->d_name, "..") && ft_strcmp(entry->d_name, "."))
+			{
+				add_to_list(entry->d_name, dir_path, &this_dir_list);
+			}
+		}
+		else if (entry->d_name[0] != '.')
+		{
+			add_to_list(entry->d_name, dir_path, &this_dir_list);
+		}
 	}
 	closedir(dir);
-	ls_sort(&this_dir_list, flags, dir_path);
+	ls_sort(&this_dir_list, flags);
 	ls_print(this_dir_list, flags, dir_path);
 	if (flags->f_R)
-		dir_loop_flag_r(this_dir_list, flags, dir_path);
-	ft_lstclear(&this_dir_list, free);
+		dir_loop_flag_r(this_dir_list, flags);
+	ft_lstclear_file_lstat(&this_dir_list, free);
 }
 
 static void	separate_dir_file_list(t_list *path, t_list **dir, t_list **file)
 {
-	struct stat	file_stat;
-
-	*dir = NULL;
-	*file = NULL;
+	t_file_lstat*	tmp;
 	while (path)
 	{
-		if (stat((char *)path->content, &file_stat) == 0)
+		tmp = (t_file_lstat*)path->content;
+		if (S_ISDIR(tmp->file_stat.st_mode))
 		{
-			if (S_ISDIR(file_stat.st_mode))
-				add_char_to_list((char *)path->content, dir);
-			else
-				add_char_to_list((char *)path->content, file);
+			add_to_list(tmp->file_name, "", dir);
 		}
 		else
 		{
-			ft_putstr_n("ft_ls: cannot access '", path->content, "': ", strerror(errno), "\n", "\0");
+			add_to_list(tmp->file_name, "", file);
 		}
 		path = path->next;
 	}
@@ -103,14 +99,14 @@ static void separate_dir_file_list_print(t_list *file, t_list *dir)
 	while (file)
 	{
 		ft_putstr("\n\t");
-		ft_putstr((char *)file->content);
+		ft_putstr(((t_file_lstat *)file->content)->file_name);
 		file = file->next;
 	}
 	ft_putstr("\ndir:");
 	while (dir)
 	{
 		ft_putstr("\n\t");
-		ft_putstr((char *)dir->content);
+		ft_putstr(((t_file_lstat *)dir->content)->file_name);
 		dir = dir->next;
 	}
 	ft_putstr("\n");
@@ -119,17 +115,26 @@ static void separate_dir_file_list_print(t_list *file, t_list *dir)
 
 void	ls_loop(t_ls *ls)
 {
-	t_list			*dir;
-	t_list			*file;
-	t_list			*tmp_dir;
+	if (ls->flags.f_d)
+	{
+		ls_sort(&ls->ls_path, &ls->flags);
+		ls_print(ls->ls_path, &ls->flags, "");
+		return ;
+	}
+
+	t_list	*dir = NULL;
+	t_list	*file = NULL;
+	t_list	*tmp_dir = NULL;
 
 	separate_dir_file_list(ls->ls_path, &dir, &file);
 	if (IS_DEBUG)
 		separate_dir_file_list_print(file, dir);
 	if (file)
 	{
-		ls_sort(&file, &ls->flags, "");
+		ls->flags.print_file = true;
+		ls_sort(&file, &ls->flags);
 		ls_print(file, &ls->flags, "");
+		ls->flags.print_file = false;
 	}
 	if ((file && dir) || ft_lstsize(dir) > 1 || ls->flags.f_R)
 	{
@@ -137,14 +142,14 @@ void	ls_loop(t_ls *ls)
 	}
 	if (dir)
 	{
-		ls_sort(&dir, &ls->flags, "");
+		ls_sort(&dir, &ls->flags);
 		tmp_dir = dir;
 		while (tmp_dir)
 		{
-			dir_loop((char*)tmp_dir->content, &ls->flags);
+			dir_loop(((t_file_lstat*)tmp_dir->content)->file_name, &ls->flags);
 			tmp_dir = tmp_dir->next;
 		}
 	}
-	ft_lstclear(&file, free);
-	ft_lstclear(&dir, free);
+	ft_lstclear_file_lstat(&file, free);
+	ft_lstclear_file_lstat(&dir, free);
 }

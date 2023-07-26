@@ -6,12 +6,13 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:39:25 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/06/29 02:25:00 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:57:54 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <../external/libft/include/libft.h>
+#include "ft_ls.h"
 #include <stdarg.h>
+#include <errno.h>
 
 void	ft_err_malloc(char *str)
 {
@@ -62,22 +63,55 @@ char	*path_to_file(char* dir_path, char* file_path)
 	return new_path;
 }
 
-void	add_char_to_list(char *str_to_list, t_list **list)
+bool	add_to_list(char *str_to_list, char *path, t_list **list)
 {
-	char	*tmp;
-	t_list	*new_list;
 
-	tmp = ft_strdup(str_to_list);
-	if (!tmp)
+	t_file_lstat *data = (t_file_lstat *)malloc(sizeof(t_file_lstat));
+	if (!data)
 	{
-		ft_putstr("Error malloc: utily_lst.c - add_to_list - tmp\n");
+		ft_putstr("Error malloc: utily_lst.c - add_to_list - data\n");
 		exit(-1);
 	}
-	new_list = ft_lstnew(tmp);
+
+	data->full_path = path_to_file(path, str_to_list);
+	if (lstat(data->full_path, &data->file_stat) != 0)
+	{
+		free(data->full_path);
+		free(data);
+		ft_putstr_n("ft_ls: cannot access '", data->full_path, "': ", strerror(errno), "\n", "\0");
+		return false;
+	}
+	data->file_name = ft_strdup(str_to_list);
+	if (!data->file_name)
+	{
+		ft_putstr("Error malloc: utily_lst.c - add_to_list - data->file_name\n");
+		exit(-1);
+	}
+
+	t_list	*new_list;
+	new_list = ft_lstnew(data);
 	if (!new_list)
 	{
 		ft_putstr("Error malloc: utily_lst.c - add_to_list - new_list\n");
 		exit(-1);
 	}
 	ft_lstadd_back(list, new_list);
+	return true;
+}
+
+void	ft_lstclear_file_lstat(t_list **lst, void (*del)(void*))
+{
+	t_list	*tmp;
+
+	if (!lst || !del || !(*lst))
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		(*del)(((t_file_lstat*)(*lst)->content)->file_name);
+		(*del)(((t_file_lstat*)(*lst)->content)->full_path);
+		(*del)((*lst)->content);
+		free(*lst);
+		*lst = tmp;
+	}
 }
