@@ -41,18 +41,18 @@ OK				=	$(C_OK)OK$(C_NO)
 all				:	$(NAME)
 
 $(NAME)			:	$(OBJ)
-#					@make -C ${LIBFT_DIR}/ all
+					@make -C ${LIBFT_DIR}/ all
 					$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIBFT_DIR)/$(LIBFT_LIB) $(INC_ALL)
 					@echo "\tCompiling...\t" [ $(NAME) ] $(SUCCESS)
 
 clean			:
-#					@make -C ${LIBFT_DIR}/ clean
+					@make -C ${LIBFT_DIR}/ clean
 					@$(RM_DIR) $(OBJ_DIR)
 					@echo "\tCleaning...\t" [ $(OBJ_DIR) ] $(OK)
 
 fclean			:	clean
-#					@${RM_FILE} $(LIBFT_DIR)/$(LIBFT_LIB)
-#					@echo "\tDeleting...\t" [ $(LIBFT_LIB) ] $(OK)
+					@${RM_FILE} $(LIBFT_DIR)/$(LIBFT_LIB)
+					@echo "\tDeleting...\t" [ $(LIBFT_LIB) ] $(OK)
 					@$(RM_FILE) $(NAME)
 					@echo "\tDeleting...\t" [ $(NAME) ] $(OK)
 

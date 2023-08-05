@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 00:31:10 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/07/27 01:27:58 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/08/05 02:44:57 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,22 +99,25 @@ static void	create_data_l(t_file_lstat *content, char **data, int* data_len, int
 	// user
 	if (!flags->f_g)
 	{
-		if (flags->f_n)
+		struct passwd* user_info;
+		if (flags->f_n || !(user_info = getpwuid(content->file_stat.st_uid)))
 			data[++i] = ft_itoa(content->file_stat.st_uid);
 		else
-			data[++i] = ft_strdup(getpwuid(content->file_stat.st_uid)->pw_name);
+			data[++i] = ft_strdup(user_info->pw_name);
 		tmp_len = ft_strlen(data[i]);
 		if (data_len[i] < tmp_len)
 			data_len[i] = tmp_len;
 	}
 
 	// group
+
 	if (!flags->f_o)
 	{
-		if (flags->f_n)
+		struct group* group_info;
+		if (flags->f_n || !(group_info = getgrgid(content->file_stat.st_gid)))
 			data[++i] = ft_itoa(content->file_stat.st_gid);
 		else
-			data[++i] = ft_strdup(getgrgid(content->file_stat.st_gid)->gr_name);
+			data[++i] = ft_strdup(group_info->gr_name);
 		tmp_len = ft_strlen(data[i]);
 		if (data_len[i] < tmp_len)
 			data_len[i] = tmp_len;
