@@ -14,11 +14,8 @@ Recode the system’s command ls
 - Management of the columns without the option -l. (man 4 tty)
 
 ## Use this project
-- git clone --recursive ....
-
-## Use external lib
-- libft
-	- git submodule add https://github.com/CroWcbr/libft.git external/libft
+- git clone --recursive ....this_project
+- or git clone ....this_project + git submodule update --init external/libft
 
 ## Within your mandatory part you are allowed to use the following functions:
 - opendir
