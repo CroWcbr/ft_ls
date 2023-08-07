@@ -76,9 +76,9 @@ bool	add_to_list(char *str_to_list, char *path, t_list **list)
 	data->full_path = path_to_file(path, str_to_list);
 	if (lstat(data->full_path, &data->file_stat) != 0)
 	{
+		ft_putstr_n("ft_ls: cannot access '", data->full_path, "': ", strerror(errno), "\n", "\0");
 		free(data->full_path);
 		free(data);
-		ft_putstr_n("ft_ls: cannot access '", data->full_path, "': ", strerror(errno), "\n", "\0");
 		return false;
 	}
 	data->file_name = ft_strdup(str_to_list);
