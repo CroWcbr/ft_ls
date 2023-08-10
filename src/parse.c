@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 15:00:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/07/26 23:34:29 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/08/10 22:47:49 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,10 @@ static bool	parse_flag(char *flags, t_ls *ls)
 			ls->flags.f_color = false;
 		}
 		else if (*flags == 'g')
+		{
 			ls->flags.f_g = true;
+			ls->flags.f_l = true;
+		}
 		else if (*flags == 'i')
 			ls->flags.f_i = true;
 		else if (*flags == 'm')
@@ -185,7 +188,10 @@ static bool	parse_flag(char *flags, t_ls *ls)
 		else if (*flags == 'n')
 			ls->flags.f_n = true;
 		else if (*flags == 'o')
+		{
 			ls->flags.f_o = true;
+			ls->flags.f_l = true;
+		}
 		else if (*flags == 's')
 			ls->flags.f_s = true;
 		else if (*flags == 'S')
