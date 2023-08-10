@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 00:31:10 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/08/05 02:44:57 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/08/10 23:03:42 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,11 @@ static void	create_data_l(t_file_lstat *content, char **data, int* data_len, int
 
 	// time
 	char time_str[20];
-	strftime(time_str, sizeof(time_str), "%b %d %H:%M", localtime(&content->file_stat.st_mtime));
-	data[++i] = ft_strdup(time_str);
+	ft_strcpy(time_str, ctime(&content->file_stat.st_mtime));
+	time_str[16] = '\0';
+	data[++i] = ft_strdup(time_str + 4);
+	// strftime(time_str, sizeof(time_str), "%b %d %H:%M", localtime(&content->file_stat.st_mtime));
+	// data[++i] = ft_strdup(time_str);
 	tmp_len = ft_strlen(data[i]);
 	if (data_len[i] < tmp_len)
 		data_len[i] = tmp_len;
